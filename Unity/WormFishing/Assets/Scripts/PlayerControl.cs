@@ -33,9 +33,13 @@ public class PlayerControl : MonoBehaviour
 		else if(Input.GetKey(KeyCode.D))
 		{
 			direction.x = -1.0f;
-		}
-
-		_constantForce.force = direction * magnitude;
+		}		
 	}
 	#endregion
+
+    #region Private Methods
+    #endregion
+
+    #region Public Methods
+    #endregion
 }
