@@ -10,6 +10,7 @@ public class GameDirector : MonoBehaviour
 
     #region Public Variables
     public Transform            character;
+    public Transform            shipAnchor;
     public static GameDirector  instance;
     #endregion
 

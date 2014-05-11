@@ -1,6 +1,7 @@
 ﻿#region References
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 #endregion
 
 public class WormAI : MonoBehaviour
@@ -9,10 +10,12 @@ public class WormAI : MonoBehaviour
     private float           _fireTimer;
     private bool            _canFire;
     private WormControl     _wormControl;
+    private List<Vector3>   _spawnLocations;
+    private int             _spawnCount;
     #endregion
 
     #region Public Variables
-    public float       fireInterval;    
+    public float            fireInterval;    
     #endregion
 
     #region Constructor
@@ -23,6 +26,17 @@ public class WormAI : MonoBehaviour
         _canFire = true;
 
         _wormControl = transform.GetChild(0).GetComponent<WormControl>();
+
+        _spawnLocations = new List<Vector3>();
+
+        Transform spawnLocationsTransform = GameObject.FindGameObjectWithTag("WormSpawn").transform;
+
+        _spawnCount = spawnLocationsTransform.childCount;
+
+        foreach(Transform spawnLocation in spawnLocationsTransform)
+        {
+            _spawnLocations.Add(spawnLocation.position);
+        }
 	}
     #endregion
 
@@ -33,6 +47,8 @@ public class WormAI : MonoBehaviour
         {
             if(_canFire == true)
             {
+                transform.position = GetNextSpawnLocation();
+
                 AdjustOrientation();
 
                 _wormControl.PlayAnimation("Pullup");
@@ -44,6 +60,43 @@ public class WormAI : MonoBehaviour
     #endregion
 
     #region Private Methods
+    private Vector3 GetNextSpawnLocation()
+    {
+        Vector3 nextSpawnLocation = Vector3.zero;
+
+        Vector3 anchorPosition = GameDirector.instance.shipAnchor.position;
+        Vector3 anchorVelocity = GameDirector.instance.shipAnchor.rigidbody.velocity;
+
+        int index = 0;
+
+        if(anchorPosition.x < 0.0f)
+        {
+            if(anchorVelocity.x < 0.0f)
+            {
+                index = Random.Range(0, 3);
+            }
+            if(anchorVelocity.x >= 0.0f)
+            {
+                index = Random.Range(1, 4);
+            }
+        }
+        else if(anchorPosition.x > 0.0f)
+        {
+            if (anchorVelocity.x < 0.0f)
+            {
+                index = Random.Range(1, 4);
+            }
+            if (anchorVelocity.x >= 0.0f)
+            {
+                index = Random.Range(2, 5);
+            }
+        }
+
+        nextSpawnLocation = _spawnLocations[index];
+
+        return nextSpawnLocation;
+    }
+
     private void AdjustOrientation()
     {
         Vector3 characterPosition = GameDirector.instance.character.position;
