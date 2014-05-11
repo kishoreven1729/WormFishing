@@ -9,15 +9,16 @@ public class ShipAI : MonoBehaviour
     private float           _switchTargetTimer;
 
     private bool            _isWormApproaching;
-
-    private Vector2         _connectedAnchorPosition;
-    private float           _limitsThreshold;
+    private float           _limitsThreshold;    
     #endregion
 
     #region Public Variables
     public float            switchTargetInterval;    
     public float            forceMagnitude;
     public float            forceFluctuation;
+
+    public Transform        leftLimit;
+    public Transform        rightLimit;
     #endregion
 
     #region Constructor
@@ -27,10 +28,7 @@ public class ShipAI : MonoBehaviour
 
         _isWormApproaching = false;
 
-        SliderJoint2D slider =  GetComponent<SliderJoint2D>();
-
-        _connectedAnchorPosition = slider.connectedAnchor;
-        _limitsThreshold = (slider.limits.max - slider.limits.min) / 2.5f; 
+        _limitsThreshold = 0.5f;   
 	}
     #endregion
 
@@ -40,10 +38,18 @@ public class ShipAI : MonoBehaviour
         if(Time.time > _switchTargetTimer)
         {
             if(_isWormApproaching == false)
-            { 
+            {
+                Vector3 force3D = Vector3.zero;
+
                 Vector2 force = GetShootForce();
 
-                rigidbody2D.AddForce(force);
+                force3D.x = force.x;
+                force3D.y = force.y;
+                                
+                if(force3D.x != 0.0f)
+                {   
+                    rigidbody.AddForce(force3D);
+                }
 
                 _switchTargetTimer = Time.time + switchTargetInterval;
             }
@@ -107,21 +113,18 @@ public class ShipAI : MonoBehaviour
     /// <param name="randomValue">The original random value passed as reference</param>
     private void RandomModifier(ref float randomValue)
     {
-        Vector2 currentPosition = new Vector2(transform.position.x, transform.position.y);
+        float distanceFromLeft = Vector2.Distance(leftLimit.position, transform.position);
+        float distanceFromRight = Vector2.Distance(rightLimit.position, transform.position);
 
-        float distanceFromAnchor = Vector2.Distance(currentPosition, _connectedAnchorPosition);
-
-        if (distanceFromAnchor > _limitsThreshold)
+        if (distanceFromRight < _limitsThreshold && randomValue > 0.4f)            //Check if it is still being sent right and modify to send left
         {
-            if (currentPosition.x > _connectedAnchorPosition.x && randomValue > 0.4f)            //Check if it is still being sent right and modify to send left
-            {            
-                randomValue -= 0.4f;
-            }
-            else if (currentPosition.x < _connectedAnchorPosition.x && randomValue < 0.4f)       //Check if it is still being sent left and modify to send right
-            {                
-                randomValue += 0.4f;
-            }
+            randomValue -= 0.4f;
         }
+
+        if (distanceFromLeft < _limitsThreshold && randomValue < 0.4f)       //Check if it is still being sent left and modify to send right
+        {
+            randomValue += 0.4f;
+        }        
     }
     #endregion
 
