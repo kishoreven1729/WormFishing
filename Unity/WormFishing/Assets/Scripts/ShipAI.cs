@@ -137,6 +137,8 @@ public class ShipAI : MonoBehaviour
         if(_isWormApproaching == false)
         {
             _isWormApproaching = true;
+
+            rigidbody.Sleep();
         }
     }
 

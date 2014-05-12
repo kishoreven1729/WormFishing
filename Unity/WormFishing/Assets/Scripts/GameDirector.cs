@@ -40,5 +40,24 @@ public class GameDirector : MonoBehaviour
     #endregion
 
     #region Public Methods
+    public void EnablePlayerControl()
+    {
+        character.SendMessage("EnablePlayerMovement", SendMessageOptions.DontRequireReceiver);
+    }
+
+    public void DisablePlayerControl()
+    {
+        character.SendMessage("DisablePlayerMovement", SendMessageOptions.DontRequireReceiver);
+    }
+
+    public void HaltShipAnchor()
+    {
+        shipAnchor.SendMessage("WormAproaching", SendMessageOptions.DontRequireReceiver);
+    }
+
+    public void ResumeShipAnchor()
+    {
+        shipAnchor.SendMessage("WormBackInDune", SendMessageOptions.DontRequireReceiver);
+    }
     #endregion
 }

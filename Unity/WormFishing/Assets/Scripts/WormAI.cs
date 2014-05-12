@@ -54,6 +54,10 @@ public class WormAI : MonoBehaviour
                 _wormControl.PlayAnimation("Pullup");
 
                 _canFire = false;
+
+                GameDirector.instance.HaltShipAnchor();
+
+                GameDirector.instance.EnablePlayerControl();
             }
         }
     }
@@ -112,6 +116,10 @@ public class WormAI : MonoBehaviour
     public void AnimationEnded()
     {
         _canFire = true;
+
+        GameDirector.instance.ResumeShipAnchor();
+
+        GameDirector.instance.DisablePlayerControl();
 
         transform.rotation = Quaternion.identity;
 
