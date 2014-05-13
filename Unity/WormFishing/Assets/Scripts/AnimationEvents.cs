@@ -8,5 +8,10 @@ public class AnimationEvents : MonoBehaviour
     {
         Application.LoadLevel(0);
     }
+
+    public void OnCatchComplete()
+    {
+        GameDirector.instance.worm.SendMessage("CatchAnimationComplete", SendMessageOptions.DontRequireReceiver);
+    }
     #endregion
 }

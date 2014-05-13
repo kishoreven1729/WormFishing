@@ -19,7 +19,7 @@ public class WormAI : MonoBehaviour
     #region Private Variables
     private float           _fireTimer;
     private bool            _canFire;
-    private WormControl     _wormControl;
+    private Animator        _wormControl;
     private List<Vector3>   _spawnLocations;
     private int             _spawnCount;
 
@@ -55,9 +55,7 @@ public class WormAI : MonoBehaviour
         _fireTimer = Time.time + fireInterval;
 
         _canFire = true;
-
-        _wormControl = transform.GetChild(0).GetComponent<WormControl>();
-
+        
         _spawnLocations = new List<Vector3>();
 
         Transform spawnLocationsTransform = GameObject.FindGameObjectWithTag("WormSpawn").transform;
@@ -94,8 +92,6 @@ public class WormAI : MonoBehaviour
                         {
                             transform.position = GetNextSpawnLocation();
 
-                            //AdjustOrientation();
-
                             ShootWorm();                            
 
                             _canFire = false;
@@ -113,11 +109,12 @@ public class WormAI : MonoBehaviour
 
                     if (distanceToTarget < _animationThreshold)
                     {
-                        //_wormControl.PlayAnimation("Catch");
+                        //_wormControl.SetTrigger("Catch");
                     }
 
                     if (distanceToTarget < _reachedTreshold)
                     {
+                        //_shootEvent = ShootEvent.Animating;
                         _shootEvent = ShootEvent.Returning;
                     }
                     else
@@ -125,6 +122,12 @@ public class WormAI : MonoBehaviour
                         wormHead.position = Vector3.Lerp(wormHead.position, _nextHeadPosition, Time.deltaTime * _wormSpeeds.x);
                         wormHead.rotation = Quaternion.Slerp(wormHead.rotation, _nextHeadRotation, Time.deltaTime * _wormSpeeds.z);
                     }
+
+                    break;
+                }
+            case ShootEvent.Animating:
+                {
+
 
                     break;
                 }
@@ -145,6 +148,8 @@ public class WormAI : MonoBehaviour
                         _fireTimer = Time.time + fireInterval;
 
                         _shootEvent = ShootEvent.NotShot;
+
+                        GameDirector.instance.AddMissScore();
                     }
                     else
                     {
@@ -235,7 +240,23 @@ public class WormAI : MonoBehaviour
 
         _canFire = false;
 
+        wormHead.rotation = _originatingHeadRotation;
+
+        wormPivot.force = new Vector3(0.0f, 0.0f, 0.0f);
+
+        wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX;
+
         transform.parent = GameDirector.instance.shipAnchor;
+    }
+
+    public void CatchAnimationComplete()
+    {
+        _shootEvent = ShootEvent.Returning;
+    }
+
+    public void IncreaseDifficulty()
+    {
+        timeToCatch = timeToCatch - (timeToCatch / 3);
     }
     #endregion
 }
