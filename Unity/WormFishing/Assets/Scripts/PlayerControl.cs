@@ -10,6 +10,8 @@ public class PlayerControl : MonoBehaviour
 
     private Vector2             _startPos;
     private Vector2             _endPos;
+
+    private bool                _playerCanMove;
 	#endregion
 
 	#region Public Variables
@@ -28,72 +30,77 @@ public class PlayerControl : MonoBehaviour
 
         _startPos = Vector2.zero;
         _endPos = Vector2.zero;
+
+        _playerCanMove = false;
 	}
 	#endregion
 	
 	#region Loop
 	void Update() 
 	{
-		Vector3 direction = Vector3.zero;
-
-        #region Keyboard
-        if (Input.GetKeyDown(KeyCode.A))
-		{
-			direction.x = -1.0f;            
-		}
-		if(Input.GetKeyDown(KeyCode.D))
-		{
-			direction.x = 1.0f;
-		}
-        if (Input.GetKeyDown(KeyCode.W))
+        if (_playerCanMove == true)
         {
-            direction.y = 1.0f;
-        }
+            Vector3 direction = Vector3.zero;
 
-        rigidbody.AddForce(direction * forceMagnitude);
-        #endregion
-
-        #region Touch
-        if (Input.touchCount > 0)
-        {
-            Touch currentTouch = Input.GetTouch(0);            
-
-            switch (currentTouch.phase)
+            #region Keyboard
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                case TouchPhase.Began:
-                    {
-                        _startPos = currentTouch.position;                       
+                direction.x = -1.0f;
+            }
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                direction.x = 1.0f;
+            }
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                direction.y = 1.0f;
+            }
 
-                        break;
-                    }
-                case TouchPhase.Ended:
-                    {
-                        _endPos = currentTouch.position;
+            rigidbody.AddForce(direction * forceMagnitude);
+            #endregion
 
-                        float moveDistance = Vector2.Distance(_startPos, _endPos);
+            #region Touch
+            if (Input.touchCount > 0)
+            {
+                Touch currentTouch = Input.GetTouch(0);
 
-                        if (moveDistance > minGestureDistance)
+                switch (currentTouch.phase)
+                {
+                    case TouchPhase.Began:
                         {
-                            if (moveDistance > maxGestureDistance)
+                            _startPos = currentTouch.position;
+
+                            break;
+                        }
+                    case TouchPhase.Ended:
+                        {
+                            _endPos = currentTouch.position;
+
+                            float moveDistance = Vector2.Distance(_startPos, _endPos);
+
+                            if (moveDistance > minGestureDistance)
                             {
-                                moveDistance = maxGestureDistance;
+                                if (moveDistance > maxGestureDistance)
+                                {
+                                    moveDistance = maxGestureDistance;
+                                }
+
+                                float magnitudeModifier = (moveDistance - minGestureDistance) * _gestureFactor;
+
+                                direction.x = _endPos.x - _startPos.x;
+                                direction.y = _endPos.y - _startPos.y;
+
+                                float newMagnitude = forceMagnitude + magnitudeModifier;
+
+                                rigidbody.AddForce(direction * newMagnitude);
                             }
 
-                            float magnitudeModifier = (moveDistance - minGestureDistance) * _gestureFactor;
-
-                            direction.x = _endPos.x - _startPos.x;
-                            direction.y = _endPos.y - _startPos.y;
-
-                            float newMagnitude = forceMagnitude + magnitudeModifier;
-
-                            rigidbody.AddForce(direction * newMagnitude);
+                            break;
                         }
-
-                        break;
-                    }
-            }            
+                }
+            }
+            #endregion
         }
-        #endregion        
 	}
 	#endregion
 
@@ -101,5 +108,14 @@ public class PlayerControl : MonoBehaviour
     #endregion
 
     #region Public Methods
+    public void EnablePlayerMovement()
+    {
+        _playerCanMove = true;
+    }
+
+    public void DisablePlayerMovement()
+    {
+        _playerCanMove = false;
+    }
     #endregion
 }

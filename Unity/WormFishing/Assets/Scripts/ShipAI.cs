@@ -28,7 +28,7 @@ public class ShipAI : MonoBehaviour
 
         _isWormApproaching = false;
 
-        _limitsThreshold = 0.5f;   
+        _limitsThreshold = 1.5f;   
 	}
     #endregion
 
@@ -137,6 +137,8 @@ public class ShipAI : MonoBehaviour
         if(_isWormApproaching == false)
         {
             _isWormApproaching = true;
+
+            rigidbody.Sleep();
         }
     }
 

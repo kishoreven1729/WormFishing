@@ -1,12 +1,22 @@
-﻿using UnityEngine;
+﻿#region References
+using UnityEngine;
 using System.Collections;
+#endregion
 
-public class DeathScript : MonoBehaviour {
+public class DeathScript : MonoBehaviour
+{
+    #region Private Variables
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    #region Public Variables
+    #endregion
+
+    #region Constructor
+    void Start () 
+    {
 	
 	}
+    #endregion
 
     #region Loop
     void Update ()
@@ -18,6 +28,7 @@ public class DeathScript : MonoBehaviour {
     {
         if(otherCollider.CompareTag("Player"))
         {
+            GameDirector.instance.CharacterDead();
         }
     }
     #endregion
