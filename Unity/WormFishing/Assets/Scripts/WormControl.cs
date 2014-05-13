@@ -30,11 +30,6 @@ public class WormControl : MonoBehaviour
     public void PlayAnimation(string triggerValue)
     {
         _wormAnimator.SetTrigger(triggerValue);
-    }
-
-    public void OnAnimationEnd()
-    {
-        _wormAI.AnimationEnded();
-    }
+    }    
     #endregion
 }

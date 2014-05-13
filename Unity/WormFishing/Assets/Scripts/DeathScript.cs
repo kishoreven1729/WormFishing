@@ -28,8 +28,7 @@ public class DeathScript : MonoBehaviour
     {
         if(otherCollider.CompareTag("Player"))
         {
-            GameDirector.instance.DisablePlayerControl();
-            GameDirector.instance.HaltShipAnchor();
+            GameDirector.instance.CharacterDead();
         }
     }
     #endregion

@@ -28,7 +28,7 @@ public class ShipAI : MonoBehaviour
 
         _isWormApproaching = false;
 
-        _limitsThreshold = 0.5f;   
+        _limitsThreshold = 1.5f;   
 	}
     #endregion
 
