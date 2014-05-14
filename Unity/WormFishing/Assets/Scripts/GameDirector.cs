@@ -71,13 +71,11 @@ public class GameDirector : MonoBehaviour
 
     public void CharacterDead()
     {
-        DisablePlayerControl();
+        character.SendMessage("KillCharacter", SendMessageOptions.DontRequireReceiver);
 
         HaltShipAnchor();
 
-        StopFiringWorm();
-
-        shipAnimator.SetTrigger("PullupWorm");
+        StopFiringWorm();        
     }
 
     public void AddMissScore()

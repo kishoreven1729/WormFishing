@@ -19,28 +19,31 @@ public class WormAI : MonoBehaviour
     #region Private Variables
     private float           _fireTimer;
     private bool            _canFire;
-    private Animator        _wormControl;
     private List<Vector3>   _spawnLocations;
     private int             _spawnCount;
 
     private float           _reachedTreshold;
     private float           _animationThreshold;
-    private ShootEvent      _shootEvent;
-
+    
     private Vector3         _nextHeadPosition;
     private Quaternion      _nextHeadRotation;
 
     private Vector3         _originatingHeadPosition;
     private Quaternion      _originatingHeadRotation;
 
+    private bool            _isAnimating;
+
     private Vector3         _wormSpeeds;                //x - Head motion, Y - Worm motion, Z - Head rotation
     #endregion
 
     #region Public Variables
+    public ShootEvent       shootEvent;
     public float            fireInterval; 
     public Transform        wormBase;
     public Transform        wormHead;
     public ConstantForce    wormPivot;
+
+    public Animator         wormHeadAnimator;
     
     public float            wormTargetY;
 
@@ -67,9 +70,9 @@ public class WormAI : MonoBehaviour
             _spawnLocations.Add(spawnLocation.position);
         }
 
-        _shootEvent = ShootEvent.NotShot;
+        shootEvent = ShootEvent.NotShot;
         _reachedTreshold = 0.2f;
-        _animationThreshold = _reachedTreshold * 4.0f;
+        _animationThreshold = _reachedTreshold * 8.0f;
 
         _originatingHeadPosition = Vector3.zero;
         _originatingHeadRotation = Quaternion.identity;
@@ -82,7 +85,7 @@ public class WormAI : MonoBehaviour
     #region Loop
     void Update () 
     {
-        switch (_shootEvent)
+        switch (shootEvent)
         {
             case ShootEvent.NotShot:
                 {
@@ -109,13 +112,16 @@ public class WormAI : MonoBehaviour
 
                     if (distanceToTarget < _animationThreshold)
                     {
-                        //_wormControl.SetTrigger("Catch");
+                        if (_isAnimating == false)
+                        {
+                            wormHeadAnimator.SetTrigger("PullupWorm");
+                            _isAnimating = true;
+                        }
                     }
 
                     if (distanceToTarget < _reachedTreshold)
                     {
-                        //_shootEvent = ShootEvent.Animating;
-                        _shootEvent = ShootEvent.Returning;
+                        shootEvent = ShootEvent.Animating;                        
                     }
                     else
                     {
@@ -127,8 +133,6 @@ public class WormAI : MonoBehaviour
                 }
             case ShootEvent.Animating:
                 {
-
-
                     break;
                 }
             case ShootEvent.Returning:
@@ -147,7 +151,7 @@ public class WormAI : MonoBehaviour
 
                         _fireTimer = Time.time + fireInterval;
 
-                        _shootEvent = ShootEvent.NotShot;
+                        shootEvent = ShootEvent.NotShot;
 
                         GameDirector.instance.AddMissScore();
                     }
@@ -193,7 +197,7 @@ public class WormAI : MonoBehaviour
 
         wormPivot.force = appliedForce * constantForce;
 
-        _shootEvent = ShootEvent.Shot;
+        shootEvent = ShootEvent.Shot;
     }
 
     private Vector3 GetNextSpawnLocation()
@@ -236,7 +240,7 @@ public class WormAI : MonoBehaviour
     #region Public Methods
     public void StopFiringWorm()
     {
-        _shootEvent = ShootEvent.NotShot;
+        shootEvent = ShootEvent.NotShot;
 
         _canFire = false;
 
@@ -244,14 +248,43 @@ public class WormAI : MonoBehaviour
 
         wormPivot.force = new Vector3(0.0f, 0.0f, 0.0f);
 
-        wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX;
+        //transform.parent = GameDirector.instance.character;
 
-        transform.parent = GameDirector.instance.shipAnchor;
+        //Vector3 wormPosition = transform.localPosition;
+
+        //wormPosition.x = 0.0f;
+
+        //transform.localPosition = wormPosition;
+
+        //transform.position += new Vector3(-transform.position.x, 0.5f, 0.0f);
+
+        wormHead.position = GameDirector.instance.character.position;
+
+        GameDirector.instance.character.parent = wormHead;
+
+        GameDirector.instance.character.rigidbody.Sleep();
+
+        GameDirector.instance.character.rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
+
+        Vector3 characterLocalPosition = GameDirector.instance.character.localPosition;
+
+        Debug.Log(characterLocalPosition);
+        
+        wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX;
     }
 
     public void CatchAnimationComplete()
     {
-        _shootEvent = ShootEvent.Returning;
+        _isAnimating = false;
+
+        if(shootEvent != ShootEvent.NotShot)
+        { 
+            shootEvent = ShootEvent.Returning;
+        }
+        else
+        {
+            GameDirector.instance.shipAnimator.SetTrigger("PullupWorm");
+        }
     }
 
     public void IncreaseDifficulty()

@@ -11,7 +11,7 @@ public class PlayerControl : MonoBehaviour
     private Vector2             _startPos;
     private Vector2             _endPos;
 
-    private bool                _playerCanMove;
+    private bool                _playerCanMove;    
 	#endregion
 
 	#region Public Variables
@@ -46,17 +46,23 @@ public class PlayerControl : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A))
             {
                 direction.x = -1.0f;
+
+                _playerCanMove = false;
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
                 direction.x = 1.0f;
+
+                _playerCanMove = false;
             }
             if (Input.GetKeyDown(KeyCode.W))
             {
                 direction.y = 1.0f;
+
+                _playerCanMove = false;
             }
 
-            rigidbody.AddForce(direction * forceMagnitude);
+            rigidbody.AddForce(direction * forceMagnitude);            
             #endregion
 
             #region Touch
@@ -93,6 +99,8 @@ public class PlayerControl : MonoBehaviour
                                 float newMagnitude = forceMagnitude + magnitudeModifier;
 
                                 rigidbody.AddForce(direction * newMagnitude);
+
+                                _playerCanMove = false;
                             }
 
                             break;
@@ -116,6 +124,18 @@ public class PlayerControl : MonoBehaviour
     public void DisablePlayerMovement()
     {
         _playerCanMove = false;
+    }
+
+    public void KillCharacter()
+    {
+        Vector3 characterPosition = transform.localPosition;
+
+        characterPosition.x = 0;
+        characterPosition.y = -2.57f;
+
+        transform.localPosition = characterPosition;
+
+        DisablePlayerMovement();
     }
     #endregion
 }

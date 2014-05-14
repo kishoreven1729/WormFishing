@@ -9,6 +9,7 @@ public class DeathScript : MonoBehaviour
     #endregion
 
     #region Public Variables
+    public WormAI wormAI;
     #endregion
 
     #region Constructor
@@ -28,7 +29,13 @@ public class DeathScript : MonoBehaviour
     {
         if(otherCollider.CompareTag("Player"))
         {
-            GameDirector.instance.CharacterDead();
+            if(wormAI != null)
+            { 
+                if(wormAI.shootEvent == WormAI.ShootEvent.Animating || wormAI.shootEvent == WormAI.ShootEvent.Shot)
+                {
+                    GameDirector.instance.CharacterDead();
+                }
+            }
         }
     }
     #endregion
