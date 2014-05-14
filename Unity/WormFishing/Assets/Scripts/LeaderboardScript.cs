@@ -23,27 +23,48 @@ public class LeaderboardScript : MonoBehaviour
         _defaultScore = 0;
         _defaultUsername = "Username";
 
-        _leaderboardSpots = names.Length;
+        _leaderboardSpots = names.Length; 
+       
+		for(int index = 0; index < _leaderboardSpots; index++)
+		{
+			names[index].alignment = TextAlignment.Left;
+			names[index].text = _defaultUsername;
+			
+			scores[index].alignment = TextAlignment.Right;
+			scores[index].text = _defaultScore + "";
+		}
 	}
     #endregion
 
     #region Loop
     void Update () 
-    {
-        FetchLeaderboard();
+    {        
     }
     #endregion
 
     #region Methods
-    private void FetchLeaderboard()
+    public void FetchLeaderboard()
     {
-        for(int index = 0; index < _leaderboardSpots; index++)
+        List<string> scoreList = Backend.GetHighScores();
+
+        for (int index = 0; index < scoreList.Count; index++)
+        {
+            string[] scoreText = scoreList[index].Split(':');
+
+            names[index].alignment = TextAlignment.Left;
+            names[index].text = scoreText[0];
+
+            scores[index].alignment = TextAlignment.Right;
+            scores[index].text = scoreText[1];
+        }
+
+        for(int index = scoreList.Count; index < _leaderboardSpots; index++)
         {
             names[index].alignment = TextAlignment.Left;
             names[index].text = _defaultUsername;
 
             scores[index].alignment = TextAlignment.Right;
-            scores[index].text = _defaultScore.ToString();
+            scores[index].text = _defaultScore + "";
         }
     }
     #endregion

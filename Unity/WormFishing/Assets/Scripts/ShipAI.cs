@@ -18,7 +18,7 @@ public class ShipAI : MonoBehaviour
     public float            forceFluctuation;
 
     public Transform        leftLimit;
-    public Transform        rightLimit;
+    public Transform        rightLimit;    
     #endregion
 
     #region Constructor
@@ -54,7 +54,7 @@ public class ShipAI : MonoBehaviour
                 _switchTargetTimer = Time.time + switchTargetInterval;
             }
         }
-    }    
+    }
     #endregion
 
     #region Private Methods

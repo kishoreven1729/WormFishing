@@ -24,7 +24,7 @@ public class AnimationEvents : MonoBehaviour
 
         string userName = nameEntry.text;
 
-        Debug.Log("username");
+        Backend.PostHighScore(userName, GameDirector.instance.gameScore);
     }
     #endregion
 }

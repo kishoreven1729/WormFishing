@@ -1,16 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class UITextAddon : MonoBehaviour {
+public class UITextAddon : MonoBehaviour
+{
+    #region Private Variables
+    private TextMesh _textMesh;
+    #endregion
 
-	// Use this for initialization
-	void Start () {
+    #region Public Variables
+    public bool fetchScore;
+    #endregion
+
+    #region Constructor
+    void Start () 
+    {
         gameObject.renderer.sortingLayerName = "UI";
         gameObject.renderer.sortingOrder = 9;
+
+        _textMesh = GetComponent<TextMesh>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    #endregion
+
+    #region Loop
+    void Update () 
+    {
+        if(fetchScore)
+        {
+            _textMesh.text = "Your Score: " + GameDirector.instance.gameScore;
+        }
+    }
+    #endregion
 }

@@ -55,6 +55,8 @@ public class ButtonScript : MonoBehaviour
                 {
                     Toggle();
 
+                    toggleTransform.SendMessage("FetchLeaderboard", SendMessageOptions.DontRequireReceiver);
+
                     break;
                 }
             case ButtonType.Start:

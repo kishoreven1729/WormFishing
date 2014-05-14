@@ -50,6 +50,8 @@ public class WormAI : MonoBehaviour
     public float            timeToCatch;    
 
     public float            constantForce;
+
+    public Transform        leaderboard;
     #endregion
 
     #region Constructor
@@ -247,17 +249,7 @@ public class WormAI : MonoBehaviour
         wormHead.rotation = _originatingHeadRotation;
 
         wormPivot.force = new Vector3(0.0f, 0.0f, 0.0f);
-
-        //transform.parent = GameDirector.instance.character;
-
-        //Vector3 wormPosition = transform.localPosition;
-
-        //wormPosition.x = 0.0f;
-
-        //transform.localPosition = wormPosition;
-
-        //transform.position += new Vector3(-transform.position.x, 0.5f, 0.0f);
-
+        
         wormHead.position = GameDirector.instance.character.position;
 
         GameDirector.instance.character.parent = wormHead;
@@ -271,6 +263,8 @@ public class WormAI : MonoBehaviour
         Debug.Log(characterLocalPosition);
         
         wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX;
+
+        leaderboard.SendMessage("FetchLeaderboard", SendMessageOptions.DontRequireReceiver);
     }
 
     public void CatchAnimationComplete()
