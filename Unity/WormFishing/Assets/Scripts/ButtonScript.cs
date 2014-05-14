@@ -9,7 +9,9 @@ public class ButtonScript : MonoBehaviour
         Exit,
         Start,
         Leaderboard,
-        Sound
+        Sound,
+        LeaderboardMenu,
+        LeaderboardGameOver,
     }
     #endregion
 
@@ -21,6 +23,8 @@ public class ButtonScript : MonoBehaviour
     #region Public Variables
     public ButtonType   buttonType;
     public Sprite       mouseOverSprite;
+
+    public Transform    toggleTransform;
     #endregion
 
     #region Constructor
@@ -48,12 +52,14 @@ public class ButtonScript : MonoBehaviour
                     break;
                 }
             case ButtonType.Leaderboard:
-                { 
+                {
+                    Toggle();
+
                     break;
                 }
             case ButtonType.Start:
                 {
-                    Application.LoadLevel(0);
+                    Application.LoadLevel(1);
                     break;
                 }
             case ButtonType.Sound:
@@ -72,6 +78,30 @@ public class ButtonScript : MonoBehaviour
                     }
                     break;
                 }
+            case ButtonType.LeaderboardMenu:
+                {
+                    Toggle();
+
+                    break;
+                }
+            case ButtonType.LeaderboardGameOver:
+                {
+                    Application.LoadLevel(0);
+
+                    break;
+                }
+        }
+    }
+
+    void Toggle()
+    {
+        if (toggleTransform.gameObject.activeSelf == false)
+        {
+            toggleTransform.gameObject.SetActive(true);
+        }
+        else
+        {
+            toggleTransform.gameObject.SetActive(false);
         }
     }
 
