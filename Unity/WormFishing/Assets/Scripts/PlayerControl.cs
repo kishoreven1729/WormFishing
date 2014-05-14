@@ -98,6 +98,11 @@ public class PlayerControl : MonoBehaviour
 
                                 float newMagnitude = forceMagnitude + magnitudeModifier;
 
+                                if (direction.y < 0.0f)
+                                {
+                                    newMagnitude -= Mathf.Abs(direction.y * forceMagnitude);
+                                }
+
                                 rigidbody.AddForce(direction * newMagnitude);
 
                                 _playerCanMove = false;
