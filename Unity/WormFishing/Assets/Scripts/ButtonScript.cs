@@ -58,7 +58,7 @@ public class ButtonScript : MonoBehaviour
                 }
             case ButtonType.Sound:
                 {
-                    if(AudioListener.volume == 0.0f)
+                    if(AudioListener.volume != 0.0f)
                     { 
                         AudioListener.volume = 0.0f;
 
@@ -77,12 +77,18 @@ public class ButtonScript : MonoBehaviour
 
     void OnMouseEnter()
     {
-        _spriteRenderer.sprite = mouseOverSprite;
+        if(buttonType != ButtonType.Sound)
+        { 
+            _spriteRenderer.sprite = mouseOverSprite;
+        }
     }
 
     void OnMouseExit()
     {
-        _spriteRenderer.sprite = _mouseOutSprite;
+        if(buttonType != ButtonType.Sound)
+        { 
+            _spriteRenderer.sprite = _mouseOutSprite;
+        }
     }
     #endregion
 }
