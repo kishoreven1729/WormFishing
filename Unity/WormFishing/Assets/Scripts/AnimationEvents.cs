@@ -9,10 +9,25 @@ public class AnimationEvents : MonoBehaviour
         StartCoroutine(TouchpadOn());
     }
 
+	public void OnStartShipLeave()
+	{
+		gameObject.audio.Play();
+	}
+
     public void OnCatchComplete()
     {
         GameDirector.instance.worm.SendMessage("CatchAnimationComplete", SendMessageOptions.DontRequireReceiver);
     }
+
+	public void OnWormMouthOpenStart()
+	{
+		GameDirector.instance.worm.SendMessage("PlayAudio", 1, SendMessageOptions.DontRequireReceiver);
+	}
+
+	public void OnWormMouthCloseStart()
+	{
+		GameDirector.instance.worm.SendMessage("PlayAudio", 2, SendMessageOptions.DontRequireReceiver);
+	}
     #endregion
 
     #region Coroutines

@@ -90,6 +90,8 @@ public class GameDirector : MonoBehaviour
     {
         gameScore += 1;
 
+		AudioManager.instace.PlaySound("UI");
+
         if(gameScore == 6 || gameScore == 11 || gameScore == 16 || gameScore == 21 || gameScore == 41)
         {
             worm.SendMessage("IncreaseDifficulty", SendMessageOptions.DontRequireReceiver);

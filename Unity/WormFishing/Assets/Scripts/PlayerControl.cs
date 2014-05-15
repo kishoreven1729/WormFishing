@@ -9,13 +9,15 @@ public class PlayerControl : MonoBehaviour
     private Vector2             _startPos;
     private Vector2             _endPos;
 
-    private bool                _playerCanMove;    
+    private bool                _playerCanMove;  
+
+	private AudioSource			_audioSource;
 	#endregion
 
 	#region Public Variables
 	public float 				forceMagnitude;
     public float                minGestureDistance;
-
+	public AudioClip[]			audioClips;
     //public Test                 justTest;
 	#endregion
 
@@ -26,6 +28,8 @@ public class PlayerControl : MonoBehaviour
         _endPos = Vector2.zero;
 
         _playerCanMove = false;
+
+		_audioSource = GetComponent<AudioSource>();
 	}
 	#endregion
 	
@@ -44,6 +48,10 @@ public class PlayerControl : MonoBehaviour
                 _playerCanMove = false;
 
                 rigidbody.AddForce(direction * forceMagnitude);
+
+				Scream();
+
+				GameDirector.instance.shipAnchor.audio.Play();
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
@@ -52,6 +60,10 @@ public class PlayerControl : MonoBehaviour
                 _playerCanMove = false;
 
                 rigidbody.AddForce(direction * forceMagnitude);
+
+				Scream();
+
+				GameDirector.instance.shipAnchor.audio.Play();
             }
             #endregion
 
@@ -113,6 +125,10 @@ public class PlayerControl : MonoBehaviour
                                 rigidbody.AddForce(direction * forceMagnitude);
 
                                 _playerCanMove = false;
+
+								Scream();
+
+								GameDirector.instance.shipAnchor.audio.Play();
                             }
                             else if(touchDeltaPosition.x < -minGestureDistance)
                             {
@@ -121,6 +137,10 @@ public class PlayerControl : MonoBehaviour
                                 rigidbody.AddForce(direction * forceMagnitude);
 
                                 _playerCanMove = false;
+
+								Scream();
+
+								GameDirector.instance.shipAnchor.audio.Play();
                             }                            
 
                             break;
@@ -163,5 +183,13 @@ public class PlayerControl : MonoBehaviour
         rigidbody.angularDrag -= 0.3f;
         rigidbody.drag -= 0.15f;
     }
+
+	public void Scream()
+	{
+		int index = Random.Range(0, 3);
+
+		_audioSource.clip = audioClips[index];
+		_audioSource.Play();
+	}
     #endregion
 }

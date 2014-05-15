@@ -26,7 +26,7 @@ public class ShipAI : MonoBehaviour
     #region Constructor
     void Start () 
     {
-        _switchTargetTimer = Time.time + switchTargetInterval;
+        _switchTargetTimer = Time.time + switchTargetInterval / 2;
 
         _isWormApproaching = false;
 
@@ -55,6 +55,8 @@ public class ShipAI : MonoBehaviour
                     if(force3D.x != 0.0f)
                     {   
                         rigidbody.AddForce(force3D);
+
+						gameObject.audio.Play();
                     }
 
                     _switchTargetTimer = Time.time + switchTargetInterval;

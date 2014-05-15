@@ -33,10 +33,21 @@ public class DeathScript : MonoBehaviour
             { 
                 if(wormAI.shootEvent == WormAI.ShootEvent.Animating || wormAI.shootEvent == WormAI.ShootEvent.Shot)
                 {
+					StartCoroutine(PlaySound());
+
                     GameDirector.instance.CharacterDead();
                 }
             }
         }
     }
     #endregion
+
+	#region Coroutines
+	public IEnumerator PlaySound()
+	{
+		yield return new WaitForSeconds(1.0f);
+
+		gameObject.audio.Play();
+	}
+	#endregion
 }

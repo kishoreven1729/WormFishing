@@ -34,6 +34,8 @@ public class WormAI : MonoBehaviour
     private bool            _isAnimating;
 
     private Vector3         _wormSpeeds;                //x - Head motion, Y - Worm motion, Z - Head rotation
+
+	private AudioSource		_audioSource;
     #endregion
 
     #region Public Variables
@@ -50,12 +52,14 @@ public class WormAI : MonoBehaviour
     public float            timeToCatch;    
 
     public float            constantForce;
+
+	public AudioClip[]		audioClips;
     #endregion
 
     #region Constructor
     void Start () 
     {
-        _fireTimer = Time.time + fireInterval;
+        _fireTimer = Time.time + fireInterval / 2;
 
         _canFire = true;
         
@@ -79,6 +83,8 @@ public class WormAI : MonoBehaviour
 
         _nextHeadPosition = Vector3.zero;
         _nextHeadRotation = Quaternion.identity; 
+
+		_audioSource = GetComponent<AudioSource>();
 	}
     #endregion
 
@@ -203,6 +209,8 @@ public class WormAI : MonoBehaviour
         wormPivot.force = appliedForce * constantForce;
 
         shootEvent = ShootEvent.Shot;
+
+		PlayAudio(0);
     }
 
     private Vector3 GetNextSpawnLocation()
@@ -261,7 +269,7 @@ public class WormAI : MonoBehaviour
 
         GameDirector.instance.character.rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
 
-        wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX;        
+        wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX; 
     }
 
     public void CatchAnimationComplete()
@@ -282,5 +290,14 @@ public class WormAI : MonoBehaviour
     {
         fireInterval -= 0.5f;
     }
+
+	public void PlayAudio(int index)
+	{
+		//if(_audioSource.clip == null || _audioSource.clip.name != audioClips[3].name)
+		//{
+			_audioSource.clip = audioClips[index];
+			_audioSource.Play();
+		//}
+	}
     #endregion
 }

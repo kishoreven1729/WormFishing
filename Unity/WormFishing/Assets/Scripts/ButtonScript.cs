@@ -25,6 +25,8 @@ public class ButtonScript : MonoBehaviour
     public Sprite       mouseOverSprite;
 
     public Transform    toggleTransform;
+
+	public AudioClip	audioClip;
     #endregion
 
     #region Constructor
@@ -48,11 +50,15 @@ public class ButtonScript : MonoBehaviour
         {
             case ButtonType.Exit:
                 { 
+					AudioManager.instace.PlaySound("UI");
+
                     Application.Quit();
                     break;
                 }
             case ButtonType.Leaderboard:
                 {
+					AudioManager.instace.PlaySound("UI");
+
                     Toggle();
 
                     toggleTransform.SendMessage("FetchLeaderboard", SendMessageOptions.DontRequireReceiver);
@@ -61,7 +67,10 @@ public class ButtonScript : MonoBehaviour
                 }
             case ButtonType.Start:
                 {
+					AudioManager.instace.PlaySound("UI");
+
                     Application.LoadLevel(1);
+
                     break;
                 }
             case ButtonType.Sound:
@@ -76,18 +85,24 @@ public class ButtonScript : MonoBehaviour
                     {   
                         AudioListener.volume = 1.0f;
 
+						AudioManager.instace.PlaySound("UI");
+
                         _spriteRenderer.sprite = _mouseOutSprite;
                     }
                     break;
                 }
             case ButtonType.LeaderboardMenu:
                 {
+					AudioManager.instace.PlaySound("UI");
+
                     Toggle();
 
                     break;
                 }
             case ButtonType.LeaderboardGameOver:
                 {
+					AudioManager.instace.PlaySound("UI");
+
                     Application.LoadLevel(0);
 
                     break;
