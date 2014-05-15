@@ -7,7 +7,9 @@ public class UserInput : MonoBehaviour
 	private bool   	hasUserEnteredName;
 	private string	_userName;
 	private bool	_enabled;
+	#if UNITY_ANDROID || UNITY_IPHONE
 	private TouchScreenKeyboard	keyboard;
+	#endif
 	#endregion
 
 	#region Public Variables
@@ -34,7 +36,7 @@ public class UserInput : MonoBehaviour
 
 		if(_enabled)
 		{
-#if UNITY_WEBPLAYER
+			#if UNITY_WEBPLAYER || UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN
 			Event e = Event.current;
 			
 			if (e.keyCode == KeyCode.Return) 

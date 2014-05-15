@@ -76,7 +76,11 @@ public class GameDirector : MonoBehaviour
 			{
 				tutorialShot.gameObject.SetActive(true);
 
+				tutorialShot.position = character.position - new Vector3(0.0f, 1.0f, 0.0f);
+
 				PlayerPrefs.SetInt("Virgin", 1);
+
+				StartCoroutine(DisableTutorial());
 			}
 		}
     }
@@ -124,7 +128,7 @@ public class GameDirector : MonoBehaviour
     #endregion
 
 	#region Coroutines
-	public IEnumerator disableTutorial()
+	public IEnumerator DisableTutorial()
 	{
 		yield return new WaitForSeconds(1.0f);
 

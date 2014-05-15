@@ -27,13 +27,20 @@ public class Backend
     #region Methods
     public static void PostHighScore(string name, long score)
     {
-        WebClient   webClient = new WebClient();
+		try
+		{
+	        WebClient   webClient = new WebClient();
 
-        webClient.Headers.Add("Content-Type", "application/json");
+	        webClient.Headers.Add("Content-Type", "application/json");
 
-        webClient.UploadString(_updateUri, "{ name : '" + name + "', score : " + score + " }");
+	        webClient.UploadString(_updateUri, "{ name : '" + name + "', score : " + score + " }");
 
-        webClient.Dispose();
+	        webClient.Dispose();
+		}
+		catch(System.Exception ex)
+		{
+			Debug.Log(ex.Message);
+		}
     }
 
     public static List<string> GetHighScores()
@@ -41,31 +48,43 @@ public class Backend
 
         List<string> scoreList = new List<string>();
 
+		try
+		{
 #if UNITY_WEBPLAYER
-        WWW site = new WWW(_leaderboardUrl);
+	        WWW site = new WWW(_leaderboardUrl);
 
-        while (!site.isDone)
-        { }
+	        while (!site.isDone)
+	        { }
 
-        string jsonScores = site.text;
+	        string jsonScores = site.text;
 #else
-        WebClient webClient = new WebClient();
+	        WebClient webClient = new WebClient();
 
-        webClient.Headers.Add("Content-Type", "application/json");
+	        webClient.Headers.Add("Content-Type", "application/json");
 
-        string jsonScores = webClient.DownloadString(_leaderboardUrl);
+	        string jsonScores = webClient.DownloadString(_leaderboardUrl);
 
-        webClient.Dispose();
+	        webClient.Dispose();
 #endif
 
-        var scores = JSON.Parse(jsonScores);
+	        var scores = JSON.Parse(jsonScores);
 
-        for (int index = 0; index < scores.Count; index++)
-        {
-            string scoreText = scores[index]["name"].Value + ": " + scores[index]["score"].AsInt;
+	        for (int index = 0; index < scores.Count; index++)
+	        {
+	            string scoreText = scores[index]["name"].Value + ":" + scores[index]["score"].AsInt;
 
-            scoreList.Add(scoreText);
-        }        
+	            scoreList.Add(scoreText);
+	        }    
+		}
+		catch(System.Exception ex)
+		{
+			Debug.Log(ex.Message);
+		}
+
+		for(int index = 0; index < 5; index++)
+		{
+			scoreList.Add ("Food:0");
+		}
 
         return scoreList;
     }

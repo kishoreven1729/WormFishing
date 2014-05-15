@@ -47,7 +47,7 @@ public class AnimationEvents : MonoBehaviour
     #endregion
 
     #region Coroutines
-    public IEnumerator TouchpadOn()
+    /*public IEnumerator TouchpadOn()
     {
 #if UNITY_WEBPLAYER
         Backend.PostHighScore("TempPlayer", GameDirector.instance.gameScore);
@@ -83,6 +83,6 @@ public class AnimationEvents : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f);
 #endif
-    }
+    }*/
     #endregion
 }
