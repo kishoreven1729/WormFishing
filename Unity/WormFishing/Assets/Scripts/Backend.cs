@@ -38,26 +38,34 @@ public class Backend
 
     public static List<string> GetHighScores()
     {
+
+        List<string> scoreList = new List<string>();
+
+#if UNITY_WEBPLAYER
+        WWW site = new WWW(_leaderboardUrl);
+
+        while (!site.isDone)
+        { }
+
+        string jsonScores = site.text;
+#else
         WebClient webClient = new WebClient();
 
         webClient.Headers.Add("Content-Type", "application/json");
 
         string jsonScores = webClient.DownloadString(_leaderboardUrl);
 
-        Debug.Log(jsonScores);
+        webClient.Dispose();
+#endif
 
         var scores = JSON.Parse(jsonScores);
-
-        List<string> scoreList = new List<string>();
 
         for (int index = 0; index < scores.Count; index++)
         {
             string scoreText = scores[index]["name"].Value + ": " + scores[index]["score"].AsInt;
 
             scoreList.Add(scoreText);
-        }
-
-        webClient.Dispose();
+        }        
 
         return scoreList;
     }

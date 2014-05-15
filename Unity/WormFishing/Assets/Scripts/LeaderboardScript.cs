@@ -18,27 +18,31 @@ public class LeaderboardScript : MonoBehaviour
     #endregion
 
     #region Constructor
+    void Awake()
+    {
+        for (int index = 0; index < _leaderboardSpots; index++)
+        {
+            names[index].alignment = TextAlignment.Left;
+            names[index].text = _defaultUsername;
+
+            scores[index].alignment = TextAlignment.Right;
+            scores[index].text = _defaultScore + "";
+        }
+    }
+
     void Start () 
     {
         _defaultScore = 0;
         _defaultUsername = "Username";
 
-        _leaderboardSpots = names.Length; 
-       
-		for(int index = 0; index < _leaderboardSpots; index++)
-		{
-			names[index].alignment = TextAlignment.Left;
-			names[index].text = _defaultUsername;
-			
-			scores[index].alignment = TextAlignment.Right;
-			scores[index].text = _defaultScore + "";
-		}
+        _leaderboardSpots = names.Length;
 	}
     #endregion
 
     #region Loop
-    void Update () 
-    {        
+    void FixedUpdate () 
+    {
+        //FetchLeaderboard();
     }
     #endregion
 

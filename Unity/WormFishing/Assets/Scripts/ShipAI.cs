@@ -10,6 +10,8 @@ public class ShipAI : MonoBehaviour
 
     private bool            _isWormApproaching;
     private float           _limitsThreshold;    
+
+    private bool            _isGameRunning;
     #endregion
 
     #region Public Variables
@@ -28,30 +30,35 @@ public class ShipAI : MonoBehaviour
 
         _isWormApproaching = false;
 
-        _limitsThreshold = 1.5f;   
+        _limitsThreshold = 1.5f;
+
+        _isGameRunning = true;
 	}
     #endregion
 
     #region Loop
     void Update () 
     {
-        if(Time.time > _switchTargetTimer)
-        {
-            if(_isWormApproaching == false)
+        if(_isGameRunning == true)
+        { 
+            if(Time.time > _switchTargetTimer)
             {
-                Vector3 force3D = Vector3.zero;
+                if(_isWormApproaching == false)
+                {
+                    Vector3 force3D = Vector3.zero;
 
-                Vector2 force = GetShootForce();
+                    Vector2 force = GetShootForce();
 
-                force3D.x = force.x;
-                force3D.y = force.y;
+                    force3D.x = force.x;
+                    force3D.y = force.y;
                                 
-                if(force3D.x != 0.0f)
-                {   
-                    rigidbody.AddForce(force3D);
-                }
+                    if(force3D.x != 0.0f)
+                    {   
+                        rigidbody.AddForce(force3D);
+                    }
 
-                _switchTargetTimer = Time.time + switchTargetInterval;
+                    _switchTargetTimer = Time.time + switchTargetInterval;
+                }
             }
         }
     }
@@ -153,6 +160,11 @@ public class ShipAI : MonoBehaviour
 
             _switchTargetTimer = Time.time;
         }
+    }
+
+    public void KillShipAI()
+    {
+        _isGameRunning = false;
     }
     #endregion
 }

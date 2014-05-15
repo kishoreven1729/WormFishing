@@ -50,8 +50,6 @@ public class WormAI : MonoBehaviour
     public float            timeToCatch;    
 
     public float            constantForce;
-
-    public Transform        leaderboard;
     #endregion
 
     #region Constructor
@@ -87,6 +85,11 @@ public class WormAI : MonoBehaviour
     #region Loop
     void Update () 
     {
+        if(GameDirector.instance.gameScore == 6 || GameDirector.instance.gameScore == 11 || GameDirector.instance.gameScore == 16 || GameDirector.instance.gameScore == 21)
+        {
+            _fireTimer -= 0.5f;
+        }
+
         switch (shootEvent)
         {
             case ShootEvent.NotShot:
@@ -252,19 +255,13 @@ public class WormAI : MonoBehaviour
         
         wormHead.position = GameDirector.instance.character.position;
 
-        GameDirector.instance.character.parent = wormHead;
+        //GameDirector.instance.character.parent = wormHead;
 
         GameDirector.instance.character.rigidbody.Sleep();
 
         GameDirector.instance.character.rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
 
-        Vector3 characterLocalPosition = GameDirector.instance.character.localPosition;
-
-        Debug.Log(characterLocalPosition);
-        
-        wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX;
-
-        leaderboard.SendMessage("FetchLeaderboard", SendMessageOptions.DontRequireReceiver);
+        wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX;        
     }
 
     public void CatchAnimationComplete()
@@ -283,7 +280,7 @@ public class WormAI : MonoBehaviour
 
     public void IncreaseDifficulty()
     {
-        timeToCatch = timeToCatch - (timeToCatch / 3);
+        fireInterval -= 0.5f;
     }
     #endregion
 }

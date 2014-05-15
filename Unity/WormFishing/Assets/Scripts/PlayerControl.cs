@@ -6,8 +6,6 @@ using System.Collections;
 public class PlayerControl : MonoBehaviour 
 {
 	#region Private Variables
-    private float               _gestureFactor;
-
     private Vector2             _startPos;
     private Vector2             _endPos;
 
@@ -16,18 +14,14 @@ public class PlayerControl : MonoBehaviour
 
 	#region Public Variables
 	public float 				forceMagnitude;
-    public float                forceFluctuation;
     public float                minGestureDistance;
-    public float                maxGestureDistance;
+
+    //public Test                 justTest;
 	#endregion
 
 	#region Constructor
 	void Start() 
-	{
-		//rigidbody.AddForce (new Vector3 (1000.0f, 0.0f, 0.0f));		
-
-        _gestureFactor = forceFluctuation / (maxGestureDistance - minGestureDistance) ;
-
+	{   
         _startPos = Vector2.zero;
         _endPos = Vector2.zero;
 
@@ -48,21 +42,17 @@ public class PlayerControl : MonoBehaviour
                 direction.x = -1.0f;
 
                 _playerCanMove = false;
+
+                rigidbody.AddForce(direction * forceMagnitude);
             }
             if (Input.GetKeyDown(KeyCode.D))
             {
                 direction.x = 1.0f;
 
                 _playerCanMove = false;
-            }
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                direction.y = 1.0f;
 
-                _playerCanMove = false;
+                rigidbody.AddForce(direction * forceMagnitude);
             }
-
-            rigidbody.AddForce(direction * forceMagnitude);            
             #endregion
 
             #region Touch
@@ -72,7 +62,7 @@ public class PlayerControl : MonoBehaviour
 
                 switch (currentTouch.phase)
                 {
-                    case TouchPhase.Began:
+                    /*case TouchPhase.Began:
                         {
                             _startPos = currentTouch.position;
 
@@ -109,6 +99,31 @@ public class PlayerControl : MonoBehaviour
                             }
 
                             break;
+                        }*/
+                    case TouchPhase.Moved:
+                        {
+                            Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
+
+                            //justTest.SetText("X: " + touchDeltaPosition.x + ", Y: " + touchDeltaPosition.y);
+
+                            if (touchDeltaPosition.x > minGestureDistance)
+                            {
+                                direction.x = 1.0f;
+
+                                rigidbody.AddForce(direction * forceMagnitude);
+
+                                _playerCanMove = false;
+                            }
+                            else if(touchDeltaPosition.x < -minGestureDistance)
+                            {
+                                direction.x = -1.0f;
+
+                                rigidbody.AddForce(direction * forceMagnitude);
+
+                                _playerCanMove = false;
+                            }                            
+
+                            break;
                         }
                 }
             }
@@ -141,6 +156,12 @@ public class PlayerControl : MonoBehaviour
         transform.localPosition = characterPosition;
 
         DisablePlayerMovement();
+    }
+
+    public void IncreaseDifficulty()
+    {
+        rigidbody.angularDrag -= 0.3f;
+        rigidbody.drag -= 0.15f;
     }
     #endregion
 }

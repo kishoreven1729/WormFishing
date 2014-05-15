@@ -14,6 +14,7 @@ public class GameDirector : MonoBehaviour
     public Transform            worm;
     public static GameDirector  instance;
     public Animator             shipAnimator;
+    public Transform            leaderboard;
 
     public long                 gameScore;
     #endregion
@@ -69,11 +70,18 @@ public class GameDirector : MonoBehaviour
         worm.SendMessage("StopFiringWorm", SendMessageOptions.DontRequireReceiver);
     }
 
+    public void UpdateLeaderboard()
+    {
+        leaderboard.SendMessage("FetchLeaderboard", SendMessageOptions.DontRequireReceiver);
+    }
+
     public void CharacterDead()
     {
         character.SendMessage("KillCharacter", SendMessageOptions.DontRequireReceiver);
 
-        HaltShipAnchor();
+        shipAnchor.SendMessage("KillShipAI", SendMessageOptions.DontRequireReceiver);
+
+        UpdateLeaderboard();
 
         StopFiringWorm();        
     }
@@ -82,9 +90,10 @@ public class GameDirector : MonoBehaviour
     {
         gameScore += 1;
 
-        if(gameScore == 21 || gameScore == 41)
+        if(gameScore == 6 || gameScore == 11 || gameScore == 16 || gameScore == 21 || gameScore == 41)
         {
             worm.SendMessage("IncreaseDifficulty", SendMessageOptions.DontRequireReceiver);
+            character.SendMessage("IncreaseDifficulty", SendMessageOptions.DontRequireReceiver);
         }        
     }
     #endregion

@@ -18,13 +18,40 @@ public class AnimationEvents : MonoBehaviour
     #region Coroutines
     public IEnumerator TouchpadOn()
     {
-        yield return new WaitForSeconds(2.5f);
+#if UNITY_WEBPLAYER
+        Backend.PostHighScore("TempPlayer", GameDirector.instance.gameScore);
+        yield return new WaitForSeconds(0.0f);
+#else
+        TouchScreenKeyboard nameEntry = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false, "Your Score: " + GameDirector.instance.gameScore + "\n Enter your name: ");
 
-        TouchScreenKeyboard nameEntry = TouchScreenKeyboard.Open("Enter your name: ", TouchScreenKeyboardType.Default, false, false, false);
+        while(nameEntry.done)
+        {
+            if (nameEntry.wasCanceled)
+            {
+                break;
+            }
+            else
+            { 
+                yield return null;
+            }
+        }
+        
+        if(!nameEntry.wasCanceled)
+        { 
+            string userName = nameEntry.text;
 
-        string userName = nameEntry.text;
+            if(userName.Length == 0)
+            {
+                userName = "Temp";
+            }
 
-        Backend.PostHighScore(userName, GameDirector.instance.gameScore);
+            Backend.PostHighScore(userName, GameDirector.instance.gameScore);
+
+            GameDirector.instance.UpdateLeaderboard();
+        }        
+
+        yield return new WaitForSeconds(1.0f);
+#endif
     }
     #endregion
 }
