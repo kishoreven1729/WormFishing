@@ -14,9 +14,18 @@ public class GameDirector : MonoBehaviour
     public Transform            worm;
     public static GameDirector  instance;
     public Animator             shipAnimator;
+
+	public Transform			tutorialShot;
     public Transform            leaderboard;
+	public Transform 			deathCollider;
+
+	public UserInput			userInput;
 
     public long                 gameScore;
+
+	public bool					isCharacterDead;
+
+	public AudioSource			loopingSound;
     #endregion
 
     #region Constructor
@@ -31,6 +40,8 @@ public class GameDirector : MonoBehaviour
     void Start()
     {
         gameScore = 0;
+
+		isCharacterDead = false;
     }
     #endregion
 
@@ -58,6 +69,16 @@ public class GameDirector : MonoBehaviour
     public void HaltShipAnchor()
     {
         shipAnchor.SendMessage("WormAproaching", SendMessageOptions.DontRequireReceiver);
+
+		if(GameDirector.instance.gameScore == 0)
+		{
+			if(PlayerPrefs.GetInt("Virgin", 0) == 0)
+			{
+				tutorialShot.gameObject.SetActive(true);
+
+				PlayerPrefs.SetInt("Virgin", 1);
+			}
+		}
     }
 
     public void ResumeShipAnchor()
@@ -77,6 +98,8 @@ public class GameDirector : MonoBehaviour
 
     public void CharacterDead()
     {
+		isCharacterDead = true;
+
         character.SendMessage("KillCharacter", SendMessageOptions.DontRequireReceiver);
 
         shipAnchor.SendMessage("KillShipAI", SendMessageOptions.DontRequireReceiver);
@@ -99,4 +122,13 @@ public class GameDirector : MonoBehaviour
         }        
     }
     #endregion
+
+	#region Coroutines
+	public IEnumerator disableTutorial()
+	{
+		yield return new WaitForSeconds(1.0f);
+
+		tutorialShot.gameObject.SetActive(false);
+	}
+	#endregion
 }

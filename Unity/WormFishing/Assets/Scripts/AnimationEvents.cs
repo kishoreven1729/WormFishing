@@ -6,12 +6,28 @@ public class AnimationEvents : MonoBehaviour
     #region Animation Events
     public void OnGameOver()
     {
-        StartCoroutine(TouchpadOn());
+        //StartCoroutine(TouchpadOn());
+		GameDirector.instance.userInput.EnableInput();
+
+		GameDirector.instance.loopingSound.Stop();
     }
 
 	public void OnStartShipLeave()
 	{
 		gameObject.audio.Play();
+	}
+
+	public void EnableDeathCollider()
+	{
+		GameDirector.instance.deathCollider.gameObject.SetActive(true);
+	}
+
+	public void DisableDeathCollider()
+	{
+		if(!GameDirector.instance.isCharacterDead)
+		{
+			GameDirector.instance.deathCollider.gameObject.SetActive(false);
+		}
 	}
 
     public void OnCatchComplete()
