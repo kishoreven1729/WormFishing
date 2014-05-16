@@ -35,6 +35,18 @@ public class ButtonScript : MonoBehaviour
         _spriteRenderer = GetComponent<SpriteRenderer>();
 
         _mouseOutSprite = _spriteRenderer.sprite;
+
+		if(buttonType == ButtonType.Sound)
+		{
+			if(AudioListener.volume == 1.0f)
+			{
+				_spriteRenderer.sprite = _mouseOutSprite;
+			}
+			else
+			{
+				_spriteRenderer.sprite = mouseOverSprite;
+			}
+		}
 	}
     #endregion
 

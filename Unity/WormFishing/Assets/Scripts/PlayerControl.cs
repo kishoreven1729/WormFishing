@@ -168,20 +168,36 @@ public class PlayerControl : MonoBehaviour
 
     public void KillCharacter()
     {
-        Vector3 characterPosition = transform.localPosition;
+        /*Vector3 characterPosition = transform.localPosition;
 
         characterPosition.x = 0;
         characterPosition.y = -2.57f;
 
-        transform.localPosition = characterPosition;
+        transform.localPosition = characterPosition;*/
+
+		transform.rotation = Quaternion.identity;
+
+		rigidbody.Sleep();
+
+		rigidbody.constraints = RigidbodyConstraints.FreezeAll;
 
         DisablePlayerMovement();
     }
 
     public void IncreaseDifficulty()
     {
-        rigidbody.angularDrag -= 0.3f;
+        rigidbody.angularDrag -= 0.6f;
         rigidbody.drag -= 0.15f;
+
+		if(rigidbody.drag < 0.15f)
+		{
+			rigidbody.drag = 0.15f;
+		}
+
+		if(rigidbody.angularDrag < 0.2f)
+		{
+			rigidbody.angularDrag = 0.2f;
+		}
     }
 
 	public void Scream()

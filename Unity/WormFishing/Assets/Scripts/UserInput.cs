@@ -57,17 +57,23 @@ public class UserInput : MonoBehaviour
 					_userName = _userName.Substring(0, 8);
 				}
 
+				if(_userName.Length != 0)
+				{
+					Backend.PostHighScore(_userName, GameDirector.instance.gameScore);
 
-				Backend.PostHighScore(_userName, GameDirector.instance.gameScore);
+					GameDirector.instance.UpdateLeaderboard();
 
-				GameDirector.instance.UpdateLeaderboard();
-
-				DisableInput();
+					DisableInput();
+				}
+				else
+				{
+					DisableInput();
+				}
 			}
 #else
 			if(hasUserEnteredName == false)
 			{
-				keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false, "Enter Username:");
+				keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default, false, false, false, false, "Enter Username: (Max 8 Characters)");
 
 				hasUserEnteredName = true;
 			}
@@ -81,11 +87,18 @@ public class UserInput : MonoBehaviour
 					_userName = _userName.Substring(0, 8);
 				}
 
-				Backend.PostHighScore(_userName, GameDirector.instance.gameScore);
+				if(_userName.Length != 0)
+				{
+					Backend.PostHighScore(_userName, GameDirector.instance.gameScore);
 
-				GameDirector.instance.UpdateLeaderboard();
-				
-				DisableInput();
+					GameDirector.instance.UpdateLeaderboard();
+					
+					DisableInput();
+				}
+				else
+				{
+					DisableInput();
+				}
 			}
 #endif
 		}

@@ -260,14 +260,8 @@ public class WormAI : MonoBehaviour
         wormHead.rotation = _originatingHeadRotation;
 
         wormPivot.force = new Vector3(0.0f, 0.0f, 0.0f);
-        
-        wormHead.position = GameDirector.instance.character.position;
 
-        //GameDirector.instance.character.parent = wormHead;
-
-        GameDirector.instance.character.rigidbody.Sleep();
-
-        GameDirector.instance.character.rigidbody.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY;
+	    wormHead.position = GameDirector.instance.character.position + new Vector3(0.0f, 0.4f, 0.0f);
 
         wormBase.rigidbody.constraints ^= RigidbodyConstraints.FreezePositionX; 
     }

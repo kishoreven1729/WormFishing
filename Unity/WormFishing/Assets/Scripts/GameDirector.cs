@@ -15,9 +15,12 @@ public class GameDirector : MonoBehaviour
     public static GameDirector  instance;
     public Animator             shipAnimator;
 
-	public Transform			tutorialShot;
+	public Transform			tutorialShot01;
+	public Transform			tutorialShot02;
     public Transform            leaderboard;
 	public Transform 			deathCollider;
+
+	public Transform			scoreboard;
 
 	public UserInput			userInput;
 
@@ -42,6 +45,13 @@ public class GameDirector : MonoBehaviour
         gameScore = 0;
 
 		isCharacterDead = false;
+
+		if(PlayerPrefs.GetInt("Virgin", 0) == 0)
+		{
+			tutorialShot02.gameObject.SetActive(true);
+
+			StartCoroutine(DisableTutorial2());
+		}
     }
     #endregion
 
@@ -58,6 +68,10 @@ public class GameDirector : MonoBehaviour
     #region Public Methods
     public void EnablePlayerControl()
     {
+#if UNITY_IPHONE || UNITY_ANDROID
+		Handheld.Vibrate();
+#endif
+
         character.SendMessage("EnablePlayerMovement", SendMessageOptions.DontRequireReceiver);
     }
 
@@ -70,17 +84,19 @@ public class GameDirector : MonoBehaviour
     {
         shipAnchor.SendMessage("WormAproaching", SendMessageOptions.DontRequireReceiver);
 
-		if(GameDirector.instance.gameScore == 0)
+		if(PlayerPrefs.GetInt("Virgin", 0) == 0)
 		{
-			if(PlayerPrefs.GetInt("Virgin", 0) == 0)
+			if(gameScore < 2)
 			{
-				tutorialShot.gameObject.SetActive(true);
+				tutorialShot01.gameObject.SetActive(true);
 
-				tutorialShot.position = character.position - new Vector3(0.0f, 1.0f, 0.0f);
-
-				PlayerPrefs.SetInt("Virgin", 1);
+				tutorialShot01.position = character.position - new Vector3(0.0f, 1.0f, 0.0f);
 
 				StartCoroutine(DisableTutorial());
+			}
+			else
+			{
+				PlayerPrefs.SetInt("Virgin", 1);
 			}
 		}
     }
@@ -104,6 +120,8 @@ public class GameDirector : MonoBehaviour
     {
 		isCharacterDead = true;
 
+		scoreboard.gameObject.SetActive(false);
+
         character.SendMessage("KillCharacter", SendMessageOptions.DontRequireReceiver);
 
         shipAnchor.SendMessage("KillShipAI", SendMessageOptions.DontRequireReceiver);
@@ -119,6 +137,16 @@ public class GameDirector : MonoBehaviour
 
 		AudioManager.instace.PlaySound("UI");
 
+		if(PlayerPrefs.GetInt("Virgin", 0) == 0)
+		{
+			if(gameScore < 2)
+			{
+				tutorialShot02.gameObject.SetActive(true);
+
+				StartCoroutine(DisableTutorial2());
+			}
+		}
+
         if(gameScore == 6 || gameScore == 11 || gameScore == 16 || gameScore == 21 || gameScore == 41)
         {
             worm.SendMessage("IncreaseDifficulty", SendMessageOptions.DontRequireReceiver);
@@ -132,7 +160,14 @@ public class GameDirector : MonoBehaviour
 	{
 		yield return new WaitForSeconds(1.0f);
 
-		tutorialShot.gameObject.SetActive(false);
+		tutorialShot01.gameObject.SetActive(false);
+	}
+
+	public IEnumerator DisableTutorial2()
+	{
+		yield return new WaitForSeconds(1.5f);
+
+		tutorialShot02.gameObject.SetActive(false);
 	}
 	#endregion
 }

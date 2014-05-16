@@ -42,34 +42,47 @@ public class LeaderboardScript : MonoBehaviour
     #region Loop
     void FixedUpdate () 
     {
-        //FetchLeaderboard();
     }
     #endregion
 
     #region Methods
     public void FetchLeaderboard()
     {
-        List<string> scoreList = Backend.GetHighScores();
+		Backend.GetHighScores();
 
-        for (int index = 0; index < scoreList.Count; index++)
-        {
-            string[] scoreText = scoreList[index].Split(':');
-
-            names[index].alignment = TextAlignment.Left;
-            names[index].text = scoreText[0];
-
-            scores[index].alignment = TextAlignment.Right;
-            scores[index].text = scoreText[1];
-        }
-
-        for(int index = scoreList.Count; index < _leaderboardSpots; index++)
-        {
-            names[index].alignment = TextAlignment.Left;
-            names[index].text = _defaultUsername;
-
-            scores[index].alignment = TextAlignment.Right;
-            scores[index].text = _defaultScore + "";
-        }
+		StartCoroutine(ReceiveData());
     }
     #endregion
+
+	#region Coroutine
+	public IEnumerator ReceiveData()
+	{
+		while(Backend.highScores.Count == 0)
+		{
+			yield return null;
+		}
+
+		List<string> scoreList = Backend.highScores;
+
+		for (int index = 0; index < scoreList.Count; index++)
+		{
+			string[] scoreText = scoreList[index].Split(':');
+			
+			names[index].alignment = TextAlignment.Left;
+			names[index].text = scoreText[0];
+			
+			scores[index].alignment = TextAlignment.Right;
+			scores[index].text = scoreText[1];
+		}
+		
+		for(int index = scoreList.Count; index < _leaderboardSpots; index++)
+		{
+			names[index].alignment = TextAlignment.Left;
+			names[index].text = _defaultUsername;
+			
+			scores[index].alignment = TextAlignment.Right;
+			scores[index].text = _defaultScore + "";
+		}
+	}
+	#endregion
 }

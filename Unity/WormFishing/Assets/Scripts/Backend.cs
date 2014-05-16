@@ -11,16 +11,22 @@ using SimpleJSON;
 public class Backend
 {
     #region Private Variables
-    private static string      _leaderboardUrl;
-    private static Uri         _updateUri;        
+    private static Uri      	_leaderboardUri;
+    private static Uri         	_updateUri;   
     #endregion
+
+	#region Public Variables
+	public static List<string> highScores;
+	#endregion
 
     #region Constructor
     static Backend()
     {
         _updateUri = new Uri("https://api.mongolab.com/api/1/databases/gameone/collections/highscores?apiKey=yJm1fjif5X4rPqnq3bz9sX1vYV4cypLK");
 
-        _leaderboardUrl = "https://api.mongolab.com/api/1/databases/gameone/collections/highscores?l=5&s={score:-1}}&apiKey=yJm1fjif5X4rPqnq3bz9sX1vYV4cypLK";
+        _leaderboardUri = new Uri("https://api.mongolab.com/api/1/databases/gameone/collections/highscores?l=5&s={score:-1}}&apiKey=yJm1fjif5X4rPqnq3bz9sX1vYV4cypLK");
+
+		highScores = new List<string>();
     }
     #endregion
 
@@ -33,7 +39,7 @@ public class Backend
 
 	        webClient.Headers.Add("Content-Type", "application/json");
 
-	        webClient.UploadString(_updateUri, "{ name : '" + name + "', score : " + score + " }");
+	        webClient.UploadStringAsync(_updateUri, "{ name : '" + name + "', score : " + score + " }");
 
 	        webClient.Dispose();
 		}
@@ -43,10 +49,9 @@ public class Backend
 		}
     }
 
-    public static List<string> GetHighScores()
+    public static void GetHighScores()
     {
-
-        List<string> scoreList = new List<string>();
+		highScores.Clear();
 
 		try
 		{
@@ -60,33 +65,44 @@ public class Backend
 #else
 	        WebClient webClient = new WebClient();
 
+			webClient.DownloadDataCompleted += HandleDownloadDataCompleted;
+
 	        webClient.Headers.Add("Content-Type", "application/json");
 
-	        string jsonScores = webClient.DownloadString(_leaderboardUrl);
-
-	        webClient.Dispose();
-#endif
-
-	        var scores = JSON.Parse(jsonScores);
-
-	        for (int index = 0; index < scores.Count; index++)
-	        {
-	            string scoreText = scores[index]["name"].Value + ":" + scores[index]["score"].AsInt;
-
-	            scoreList.Add(scoreText);
-	        }    
+	        webClient.DownloadDataAsync(_leaderboardUri);	        
+#endif	        
 		}
 		catch(System.Exception ex)
 		{
 			Debug.Log(ex.Message);
 		}
+    }
 
-		for(int index = 0; index < 5; index++)
+    static void HandleDownloadDataCompleted (object sender, DownloadDataCompletedEventArgs e)
+    {
+		List<string> scoreList = new List<string>();
+
+		string jsonString = "";
+
+		byte[] data = e.Result;
+
+		int dataCount = data.Length;
+
+		for(int byteIndex = 0; byteIndex < dataCount; byteIndex++)
 		{
-			scoreList.Add ("Food:0");
+			jsonString += (char)data[byteIndex];
 		}
 
-        return scoreList;
+		var scores = JSON.Parse(jsonString);
+
+		for (int index = 0; index < scores.Count; index++)
+		{
+			string scoreText = scores[index]["name"].Value + ":" + scores[index]["score"].AsInt;
+
+			scoreList.Add(scoreText);
+		}    
+
+		highScores = scoreList;
     }
     #endregion
 }
